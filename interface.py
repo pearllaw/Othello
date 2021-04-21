@@ -84,3 +84,16 @@ class Gui:
             y = (self.MARGIN + self.WIDTH) * move[0] + self.MARGIN
             pygame.draw.rect(self.screen, self.YELLOW, [x, y, self.WIDTH, self.HEIGHT])
         pygame.display.flip()
+    
+    def score(self, player):
+        self.screen.fill(self.BLACK)
+        if player == 'B':
+            display = pygame.font.Font.render("You won!", True, self.WHITE)
+        elif player == 'W':
+            display = pygame.font.Font.render("White (AI) won!", True, self.WHITE)
+        else:
+            display = pygame.font.Font.render("Tie!", True, self.WHITE)
+        self.screen.blit(display, 
+            display.get_rect(
+                center=(self.screen.get_width()/2, self.screen.get_height()/2)))
+        pygame.display.flip()

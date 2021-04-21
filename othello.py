@@ -179,6 +179,20 @@ class Othello(Game):
         """Run the program until terminal state is reached."""
         while True:
             if self.terminal_test(state):
+                player = state.to_move
+                opponent = self.opponent(player)
+                if player == 'B':
+                    black = self.compute_utility(player, state.board)
+                    white = self.compute_utility(opponent, state.board)
+                else:
+                    black = self.compute_utility(opponent, state.board)
+                    white = self.compute_utility(player, state.board)
+                if black > white:
+                    winner = 'B'
+                elif black < white:
+                    winner = 'W'
+                else:
+                    winner = None
                 break
             moves = self.actions(state)
             if len(moves) > 0:
@@ -195,6 +209,7 @@ class Othello(Game):
                     move = alpha_beta_cutoff_search(state, self, 4, None, self.evaluate)
                     state = self.result(state, move)
             self.gui.update(state.board)
+        self.gui.score(winner)
 
 if __name__ == '__main__':
     othello = Othello()
