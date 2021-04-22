@@ -97,9 +97,11 @@ class Othello(Game):
         return black - white
 
     def evaluate(self, state):
-        """Evaluation function to determine favorability of a move based on current board state"""
+        """Evaluation function that determines the goodness/value of a 
+        position in the current board state."""
         board = state.board
-        return self.disk_difference(board) + self.corners_occupied(board) + self.corner_closeness(board) + self.mobility(state)
+        return self.disk_difference(board) + self.corners_occupied(board) + self.corner_closeness(board) 
+        # + self.mobility(state)
 
     def disk_difference(self, board):
         """Captures difference in disks on the board between B - human player 
@@ -107,13 +109,14 @@ class Othello(Game):
         disks = [board.get(square) for square in board] 
         black_disks = sum(1 for d in disks if d == 'B')
         white_disks = sum(1 for d in disks if d == 'W')
-        if black_disks > white_disks:
-            return (black_disks/(black_disks + white_disks)) * 100
-        else:
-            return -(white_disks/(black_disks + white_disks)) * 100
+        return 100 * (black_disks - white_disks) / (black_disks + white_disks + 1)
+        # if black_disks > white_disks:
+        #     return (black_disks/(black_disks + white_disks)) * 100
+        # else:
+        #     return -(white_disks/(black_disks + white_disks)) * 100
     
     def corners_occupied(self, board):
-        """Captures how many corners are occupied by each player, also evaluates 
+        """Captures how many corners are occupied by each player, evaluates 
         stability since corner disks cannot be flipped by opponent once occupied."""
         b = w = 0
         if board.get((0, 0)) == 'B':
@@ -132,7 +135,7 @@ class Othello(Game):
             b += 1
         elif board.get((7, 7)) == 'W':
             w += 1
-        return 25 * (b - w)
+        return 100 * (b - w) / (b + w + 1)
     
     def corner_closeness(self, board):
         """Captures how many of each player's disks that are close to a corner.""" 
@@ -157,23 +160,24 @@ class Othello(Game):
             elif board.get((7, col)) == 'W':
                 w += 1
 
-        return 4 * (b - w)
+        return 100 * (b - w) / (b + w + 1)
 
-    def mobility(self, state):
-        """Captures relative difference in mobility (possible moves) for max and 
-        min player."""
-        black_moves = len(self.actions(state))
-        white_moves = len(self.actions(state))
-        if black_moves + white_moves == 0:
-            return 0
-        else:
-            return 100 * white_moves / (white_moves + black_moves)
+    # def mobility(self, state):
+    #     """Captures relative difference in mobility (possible moves) for max and 
+    #     min player."""
+    #     opponent = self.opponent(state.to_move)
+    #     black_moves = len(self.actions())
+    #     white_moves = len(self.actions(state))
+    #     if black_moves + white_moves == 0:
+    #         return 0
+    #     else:
+    #         return 100 * white_moves / (white_moves + black_moves)
     
     def terminal_test(self, state):
         """A state is terminal if it is won or neither player has any valid move."""
         player = state.to_move
         opponent = self.opponent(player)
-        return not (self.any_valid_moves(state, player) or self.any_valid_moves(state, opponent))
+        return not (self.any_valid_moves(state, player) and self.any_valid_moves(state, opponent))
 
     def run(self, state):
         """Run the program until terminal state is reached."""

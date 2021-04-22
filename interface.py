@@ -59,7 +59,7 @@ class Gui:
                     column = pos[0] // (self.WIDTH + self.MARGIN)
                     row = pos[1] // (self.HEIGHT + self.MARGIN)
                     return (row, column)
-        pygame.quit()
+        pygame.quit()  
 
     def reset_square(self, pos):
         """Reset squares back to original color."""
@@ -86,14 +86,22 @@ class Gui:
         pygame.display.flip()
     
     def score(self, player):
-        self.screen.fill(self.BLACK)
-        if player == 'B':
-            display = pygame.font.Font.render("You won!", True, self.WHITE)
-        elif player == 'W':
-            display = pygame.font.Font.render("White (AI) won!", True, self.WHITE)
-        else:
-            display = pygame.font.Font.render("Tie!", True, self.WHITE)
-        self.screen.blit(display, 
-            display.get_rect(
-                center=(self.screen.get_width()/2, self.screen.get_height()/2)))
-        pygame.display.flip()
+        """Display the score and keep the screen open until user closes it."""
+        done = False
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            self.screen.fill(self.BLACK)
+            font = pygame.font.SysFont('Arial', 20)
+            if player == 'B':
+                display = font.render("You won!", True, self.WHITE)
+            elif player == 'W':
+                display = font.render("White won!", True, self.WHITE)
+            else:
+                display = font.render("Tie!", True, self.WHITE)
+            self.screen.blit(display, 
+                display.get_rect(
+                    center=(self.screen.get_width()/2, self.screen.get_height()/2)))
+            pygame.display.flip()
+        pygame.quit()
