@@ -100,8 +100,7 @@ class Othello(Game):
         """Evaluation function that determines the goodness/value of a 
         position in the current board state."""
         board = state.board
-        return self.disk_difference(board) + self.corners_occupied(board) + self.corner_closeness(board) 
-        # + self.mobility(state)
+        return self.disk_difference(board) + (1000 * self.corners_occupied(board)) + (500 * self.corner_closeness(board)) + (2 * self.mobility(state)) 
 
     def disk_difference(self, board):
         """Captures difference in disks on the board between B - human player 
@@ -109,11 +108,7 @@ class Othello(Game):
         disks = [board.get(square) for square in board] 
         black_disks = sum(1 for d in disks if d == 'B')
         white_disks = sum(1 for d in disks if d == 'W')
-        return 100 * (black_disks - white_disks) / (black_disks + white_disks + 1)
-        # if black_disks > white_disks:
-        #     return (black_disks/(black_disks + white_disks)) * 100
-        # else:
-        #     return -(white_disks/(black_disks + white_disks)) * 100
+        return (100 * black_disks) / (black_disks + white_disks)
     
     def corners_occupied(self, board):
         """Captures how many corners are occupied by each player, evaluates 
@@ -135,8 +130,8 @@ class Othello(Game):
             b += 1
         elif board.get((7, 7)) == 'W':
             w += 1
-        return 100 * (b - w) / (b + w + 1)
-    
+        return 25 * (w - b) 
+
     def corner_closeness(self, board):
         """Captures how many of each player's disks that are close to a corner.""" 
         b = w = 0
@@ -159,19 +154,22 @@ class Othello(Game):
                 b += 1
             elif board.get((7, col)) == 'W':
                 w += 1
+        return -25 * b
 
-        return 100 * (b - w) / (b + w + 1)
-
-    # def mobility(self, state):
-    #     """Captures relative difference in mobility (possible moves) for max and 
-    #     min player."""
-    #     opponent = self.opponent(state.to_move)
-    #     black_moves = len(self.actions())
-    #     white_moves = len(self.actions(state))
-    #     if black_moves + white_moves == 0:
-    #         return 0
-    #     else:
-    #         return 100 * white_moves / (white_moves + black_moves)
+    def mobility(self, state):
+        """Captures relative difference in mobility (possible moves) for max and 
+        min player."""
+        opponent = self.opponent(state.to_move)
+        opponent_state = GameState(to_move=opponent, 
+            utility=self.compute_utility(opponent, state.board), 
+            board=state.board, moves=[])
+        black_moves = len(self.actions(state))
+        white_moves = len(self.actions(opponent_state))
+        if black_moves + white_moves == 0:
+            return 0
+        else:
+            return (100 * white_moves) / (black_moves + white_moves)
+        
     
     def terminal_test(self, state):
         """A state is terminal if it is won or neither player has any valid move."""
@@ -209,7 +207,7 @@ class Othello(Game):
                             break
                     state = self.result(state, move) 
                 # AI player
-                else:                     
+                else: 
                     move = alpha_beta_cutoff_search(state, self, 4, None, self.evaluate)
                     state = self.result(state, move)
             self.gui.update(state.board)
