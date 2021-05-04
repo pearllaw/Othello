@@ -100,7 +100,7 @@ class Othello(Game):
         """Evaluation function that determines the goodness/value of a 
         position in the current board state."""
         board = state.board
-        return self.disk_difference(board) + (1000 * self.corners_occupied(board)) + (500 * self.corner_closeness(board)) + (2 * self.mobility(state)) 
+        return self.disk_difference(board) + 1000*self.corners_occupied(board) + 10*self.corner_closeness(board)
 
     def disk_difference(self, board):
         """Captures difference in disks on the board between B - human player 
@@ -108,67 +108,48 @@ class Othello(Game):
         disks = [board.get(square) for square in board] 
         black_disks = sum(1 for d in disks if d == 'B')
         white_disks = sum(1 for d in disks if d == 'W')
-        return (100 * black_disks) / (black_disks + white_disks)
+        return white_disks - black_disks
     
     def corners_occupied(self, board):
         """Captures how many corners are occupied by each player, evaluates 
         stability since corner disks cannot be flipped by opponent once occupied."""
         b = w = 0
-        if board.get((0, 0)) == 'B':
-            b += 1
-        elif board.get((0, 0)) == 'W':
-            w += 1
-        if board.get((0, 7)) == 'B':
-            b += 1
-        elif board.get((0, 7)) == 'W':
-            w += 1
-        if board.get((7, 0)) == 'B':
-            b += 1
-        elif board.get((7, 0)) == 'W':
-            w += 1
-        if board.get((7, 7)) == 'B':
-            b += 1
-        elif board.get((7, 7)) == 'W':
-            w += 1
-        return 25 * (w - b) 
+
+        if board.get((0,0)) == 'B': b += 1
+        elif board.get((0,0)) == 'W': w += 1
+        if board.get((0,7)) == 'B': b += 1
+        elif board.get((0,7)) == 'W': w += 1
+        if board.get((7,0)) == 'B': b += 1
+        elif board.get((7,0)) == 'W': w += 1
+        if board.get((7,7)) == 'B': b += 1
+        elif board.get((7,7)) == 'W': w += 1
+        return w - b
 
     def corner_closeness(self, board):
         """Captures how many of each player's disks that are close to a corner.""" 
-        b = w = 0
-        for row in range(1, 7):
-            if board.get((row, 0)) == 'B':
-                b += 1
-            elif board.get((row, 0)) == 'W':
-                w += 1
-            if board.get((row, 7)) == 'B':
-                b += 1
-            elif board.get((row, 7)) == 'W':
-                w += 1
+        w = 0
 
-        for col in range(2, 8):
-            if board.get((0, col)) == 'B':
-                b += 1
-            elif board.get((0, col)) == 'W':
-                w += 1
-            if board.get((7, col)) == 'B':
-                b += 1
-            elif board.get((7, col)) == 'W':
-                w += 1
-        return -25 * b
+        for row in range(1,7):
+            if board.get((row, 0)) == 'W': w += 1
+            if board.get((row, 7)) == 'W': w += 1
+        for col in range(2,8):
+            if board.get((0, col)) == 'W': w += 1
+            if board.get((7, col)) == 'W': w += 1
+        return w
 
     def mobility(self, state):
         """Captures relative difference in mobility (possible moves) for max and 
         min player."""
         opponent = self.opponent(state.to_move)
-        opponent_state = GameState(to_move=opponent, 
-            utility=self.compute_utility(opponent, state.board), 
+        opponent_state = GameState(to_move=opponent,
+            utility=self.compute_utility(opponent, state.board),
             board=state.board, moves=[])
         black_moves = len(self.actions(state))
         white_moves = len(self.actions(opponent_state))
         if black_moves + white_moves == 0:
             return 0
         else:
-            return (100 * white_moves) / (black_moves + white_moves)
+            return white_moves
         
     
     def terminal_test(self, state):
