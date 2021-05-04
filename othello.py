@@ -100,7 +100,7 @@ class Othello(Game):
         """Evaluation function that determines the goodness/value of a 
         position in the current board state."""
         board = state.board
-        return self.disk_difference(board) + 1000*self.corners_occupied(board) + 10*self.corner_closeness(board)
+        return self.disk_difference(board) + 1000*self.corners_occupied(board) + 10*self.corner_closeness(board) + self.mobility(board)
 
     def disk_difference(self, board):
         """Captures difference in disks on the board between B - human player 
@@ -151,7 +151,6 @@ class Othello(Game):
         else:
             return white_moves
         
-    
     def terminal_test(self, state):
         """A state is terminal if it is won or neither player has any valid move."""
         player = state.to_move
