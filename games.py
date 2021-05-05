@@ -1,5 +1,8 @@
 import numpy as np
 
+"""Code taken from aimacode (textbook "Artificial Intelligence: A Modern Approach"): 
+https://github.com/aimacode/aima-python/blob/master/games.py#L89"""
+
 def alpha_beta_cutoff_search(state, game, d=4, cutoff_test=None, eval_fn=None):
     """Search game to determine best action; use alpha-beta pruning.
     This version cuts off search and uses an evaluation function."""
