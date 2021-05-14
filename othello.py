@@ -100,7 +100,7 @@ class Othello(Game):
         """Evaluation function that determines the goodness/value of a 
         position in the current board state."""
         board = state.board
-        return self.disk_difference(board) + 1000*self.corners_occupied(board) + 10*self.corner_closeness(board)
+        return self.disk_difference(board) + 1000*self.corners_occupied(board) + 10*self.edge_closeness(board)
 
     def disk_difference(self, board):
         """Captures difference in disks on the board between B - human player 
@@ -125,7 +125,7 @@ class Othello(Game):
         elif board.get((7,7)) == 'W': w += 1
         return w - b
 
-    def corner_closeness(self, board):
+    def edge_closeness(self, board):
         """Captures how many of each player's disks that are close to a corner.""" 
         w = 0
 
