@@ -25,4 +25,5 @@ python -m othello
 
 ## Live Demo
 ![othello_demo2](https://user-images.githubusercontent.com/35009493/118733394-068f7b80-b7f1-11eb-964c-e335bf3aae61.gif)
+
 *Yellow squares show valid moves for the current player*
