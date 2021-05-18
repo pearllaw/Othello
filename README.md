@@ -20,9 +20,11 @@ python -m othello
 - Black always moves first.
 - If it is your turn, make a valid move by outflanking any number of discs in one/more rows in any direction (horizontal, vertical, diagonal)
 - All disks that are outflanked will be flipped
-- Game alternates between black and white until: one/both player(s) cannot make a valid move to outflank the opponent. 
+- Game alternates between black and white until one/both player(s) cannot make a valid move to outflank the opponent
 - Click [here](https://www.eothello.com/) for more information about the rules
 
 ## Live Demo
 *Yellow squares show valid moves for the current player
-![Othello_Game](file:///Users/pearllaw/Desktop/othello_demo2.gif)
+
+![othello_demo2](https://user-images.githubusercontent.com/35009493/118733394-068f7b80-b7f1-11eb-964c-e335bf3aae61.gif)
+
